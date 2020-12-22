@@ -1,31 +1,68 @@
-import { Effect, Reducer, Subscription} from 'umi'
+import { Effect, ImmerReducer, Reducer, Subscription } from 'umi';
 
-interface UserModelType{
-  namespace:String,
+interface userModelType{
+  namespace:string,
   state:{},
-  reducers:{},
   effects:{},
+  reducers:{},
   subscriptions:{
     setup:Subscription
   }
-};
-
-const UserModel: UserModelType ={
-  namespace:'users',
-  state:{
-    name:''
-  },
-  reducers:{
-  },
-  effects:{
-  },
-  subscriptions:{
-    setup({ dispatch, history },done) {
-
-    }
-  }
-
-
 }
 
+
+const UserModel = {
+  namespace: 'users',
+  state: {
+    name: '',
+  },
+  effects: {
+    *query({ payload }, { call, put }) {
+    },
+  },
+  reducers: {
+    save(state, action) {
+      const data = [
+        {
+          key: '1',
+          name: 'John Brown',
+          age: 32,
+          address: 'New York No. 1 Lake Park',
+          tags: ['nice', 'developer'],
+        },
+        {
+          key: '2',
+          name: 'Jim Green',
+          age: 42,
+          address: 'London No. 1 Lake Park',
+          tags: ['loser'],
+        },
+        {
+          key: '3',
+          name: 'Joe Black',
+          age: 32,
+          address: 'Sidney No. 1 Lake Park',
+          tags: ['cool', 'teacher'],
+        },
+      ];
+
+      return data;
+    },
+    // 启用 immer 之后
+    // save(state, action) {
+    //   state.name = action.payload;
+    // },
+  },
+  subscriptions: {
+    setup({ dispatch, history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname === '/users') {
+          dispatch({
+            type: 'save',
+          })
+        }
+      });
+    }
+  }
+};
 export default UserModel;
